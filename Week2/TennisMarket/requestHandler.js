@@ -15,22 +15,13 @@ let main = (res) => {
     res.write(main_view);
     res.end();
 }
-let login = (res) => {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write('login');
-    res.end();
-}
-
 let redRacket = (res) => {
-    console.log("redRoacket 함수 실행1");
     fs.readFile('./img/redRacket.png', (err,data) => {
-        console.log("redRoacket 함수 실행2");
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
         res.end();
     })
 }
-
 let blueRacket = (res) => {
     fs.readFile('./img/blueRacket.png', (err,data) => {
         res.writeHead(200, {'Content-Type': 'text/html'});
@@ -38,7 +29,6 @@ let blueRacket = (res) => {
         res.end();
     })
 }
-
 let blackRacket = (res) => {
     fs.readFile('./img/blackRacket.png', (err,data) => {
         res.writeHead(200, {'Content-Type': 'text/html'});
@@ -46,11 +36,19 @@ let blackRacket = (res) => {
         res.end();
     })
 }
-
+let order = (res, productID) => {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    mysqlDB.query('INSERT INTO orderlist(product_id) VALUES('+productID+')', (err, rows) => {
+        if (err) console.error(err);
+        console.log(rows);
+    });
+    res.write('Order page');
+    res.end();
+}
 
 let handle = {};
 handle['/'] = main;
-handle['/login'] = login;
+handle['/order'] = order;
 
 /* img directory */
 handle['/img/redRacket.png'] = redRacket;
