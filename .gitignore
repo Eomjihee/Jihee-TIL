@@ -128,3 +128,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+.idea/misc.xml
+.idea/modules.xml
+.idea/ProgrammersSchool.iml
+.idea/runConfigurations.xml
+.idea/StickySelectionHighlights.xml
+.idea/vcs.xml
+.idea/workspace.xml
+Week2/TennisMarket/package-lock.json
+Week3/package-lock.json
