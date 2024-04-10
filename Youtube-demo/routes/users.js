@@ -1,9 +1,8 @@
 // express 모듈 세팅
 const express = require('express');
-const { message } = require('statuses');
-const app = express();
-app.listen(8080);
-app.use(express.json()); // http 외 모듈 'json' 사용 선언
+const router = express.Router();
+
+router.use(express.json()); // http 외 모듈 'json' 사용 선언
 
 let db = new Map();
 let id = 1; // 객체 유니크하게 구별하기 위함
@@ -12,7 +11,7 @@ let id = 1; // 객체 유니크하게 구별하기 위함
 /*
 { userId, pwd, name }
 */
-app.post('/login', (req, res) => {
+router.post('/login', (req, res) => {
   // 1. userId가 DB에 저장된 회원인지 확인
   const {userId, pwd} = req.body
   let loginUser;
@@ -38,7 +37,7 @@ app.post('/login', (req, res) => {
   }
 })
 // 회원가입
-app.post('/join', (req, res) => {
+router.post('/join', (req, res) => {
   if(req.body && Object.keys(req.body).length){
     db.set(id++, req.body);
     res.status(201).json({
@@ -52,7 +51,7 @@ app.post('/join', (req, res) => {
   }
 })
 
-app
+router
   .route('/users/:id')
   .get((req, res) => {
     let {id} = req.params;
@@ -91,3 +90,6 @@ app
     if(Object.keys(obj).length !== 0) return true;
     return false;
   }
+
+  // -------------
+module.exports = router;

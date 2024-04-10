@@ -1,14 +1,14 @@
 // express 모듈 세팅
 const express = require('express');
-const { message } = require('statuses');
-const app = express();
-app.listen(8080);
-app.use(express.json()); // http 외 모듈 'json' 사용 선언
+const router = express.Router();
+
+router.listen(8080);
+router.use(express.json()); // http 외 모듈 'json' 사용 선언
 
 let db = new Map();
 let id = 1; // 객체 유니크하게 구별하기 위함
 
-app.route('/channels')
+router.route('/')
   // 채널 전체 조회
   .get((req, res) => {
     if(db.size) {
@@ -33,7 +33,7 @@ app.route('/channels')
     }
   })
 
-app.route('/channels/:id')
+router.route('/:id')
 // 채널 개별 조회
   .get((req, res) => {
     let {id} = req.params
@@ -89,3 +89,5 @@ app.route('/channels/:id')
       
     })
   })
+
+module.exports = router;
