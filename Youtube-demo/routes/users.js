@@ -5,7 +5,6 @@ const router = express.Router();
 router.use(express.json()); // http 외 모듈 'json' 사용 선언
 
 let db = new Map();
-let id = 1; // 객체 유니크하게 구별하기 위함
 
 // 로그인
 /*
@@ -39,9 +38,10 @@ router.post('/login', (req, res) => {
 // 회원가입
 router.post('/join', (req, res) => {
   if(req.body && Object.keys(req.body).length){
-    db.set(id++, req.body);
+    let{userId} = req.body;
+    db.set(userId, req.body);
     res.status(201).json({
-      message: `${db.get(id-1).name}님 환영합니다.`
+      message: `${db.get(userId).name}님 환영합니다.`
     })
 
   }else{
@@ -54,17 +54,16 @@ router.post('/join', (req, res) => {
 router
   .route('/users/:id')
   .get((req, res) => {
-    let {id} = req.params;
-    id = parseInt(id);
-    const user = db.get(id);
-    if(user == undefined){
-      res.status(404).json({
-        message : `회원 정보가 없습니다.`
-      })
-    }else{
+    let {userId} = req.body;
+    const user = db.get(userId);
+    if(user){
       res.status(200).json({
         userId : user.userId,
         name : user.name
+      })
+    }else{
+      res.status(404).json({
+        message : `회원 정보가 없습니다.`
       })
     }
   })
@@ -73,14 +72,14 @@ router
     id = parseInt(id);
     const user = db.get(id);
   
-    if(user == undefined){
-      res.status(404).json({
-        message : `회원 정보가 없습니다.`
-      })
-    }else{
+    if(user){
       db.delete(id);
       res.status(200).json({
         message : `${user.name}님 다음에 만나요.`
+      })
+    }else{
+      res.status(404).json({
+        message : `회원 정보가 없습니다.`
       })
     }
   })
