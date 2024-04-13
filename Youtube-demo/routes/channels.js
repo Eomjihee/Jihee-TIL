@@ -18,12 +18,26 @@ router.route('/')
   })
   // 채널 개별 생성
   .post((req, res) => {
-    if(req.body.channelTitle) {
-      let channel = {...req.body};
-      db.set(id++, channel);
-      res.status(201).json({
-        message : `${db.get(id-1).channelTitle} 채널을 응원합니다.`
-      })
+    const {name, userId} = req.body;
+    if(name, userId) {
+      const sql = `INSERT INTO users(name, user_id) VALUES(?,?)`;
+      const values = [name, userId];
+      conn.query(
+        sql, values,
+        (err, results, fields) => {
+          if(results.length) {
+            res.status(201).json(results);
+          }else{
+            res.status(404).json({
+              message : `회원 정보가 없습니다.`
+            })
+          }
+        }
+      )
+      // db.set(id++, channel);
+      // res.status(201).json({
+      //   message : `${db.get(id-1).channelTitle} 채널을 응원합니다.`
+      // })
     }else{
       res.status(400).json({
         message : `올바른 요청 값이 아닙니다.`
