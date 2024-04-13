@@ -6,11 +6,10 @@ const {body, param, validationResult} = require('express-validator');
 
 router.use(express.json()); // http 외 모듈 'json' 사용 선언
 
-const validate = (req, res) => {
+const validate = (req, res, next) => {
   const err = validationResult(req);
-  if(!err.isEmpty()){
-    return res.status(400).json(err.array())
-  }
+  if(err.isEmpty()) return next() // 다음 할 일 찾아갈 것 (미들웨어, 함수)
+  else return res.status(400).json(err.array()) 
 }
 
 router.route('/')
@@ -20,7 +19,7 @@ router.route('/')
       body('userId').notEmpty().isInt().withMessage(`숫자를 입력해주세요.`),
       validate // 콜백함수 호출 전 validate 미들웨어를 동작해 성공 시에만 콜백함수 호출
     ]
-    ,(req, res) => {
+    ,(req, res, next) => {
       let {userId} = req.body;
       let sql = `SELECT * FROM channels WHERE user_id = ?`;
       conn.query(
@@ -37,16 +36,10 @@ router.route('/')
   .post(
     [
       body('userId').notEmpty().isInt().withMessage(`숫자를 입력해주세요.`),
-      body('ch_name').notEmpty().isString().withMessage(`올바른 문자로 입력해주세요.`)
+      body('ch_name').notEmpty().isString().withMessage(`올바른 문자로 입력해주세요.`),
+      validate
     ],
     (req, res) => {
-      const err = validationResult(req);
-      if(!err.isEmpty()){
-        // 종료
-        // console.error(`[code error] ${err.array()}`);
-        return res.status(400).json(err.array())
-      }
-
       const {chName, userId} = req.body;
       const sql = `INSERT INTO channels(ch_name, user_id) VALUES(?,?)`;
       const values = [chName, userId];
@@ -66,11 +59,12 @@ router.route('/')
 
 router.route('/:id')
 // 채널 개별 조회
-  .get(param('chId').notEmpty().withMessage('chId 값이 필요'),(req, res) => {
-    const err = validationResult(req);
-    if(!err.isEmpty()){
-      return res.status(400).json(err.array())
-    }
+  .get(
+    [
+      param('chId').notEmpty().withMessage('chId 값이 필요'),
+      validate
+    ]
+    ,(req, res) => {
     
     let {chId} = req.params
     chId = parseInt(chId);
@@ -87,15 +81,14 @@ router.route('/:id')
     )
   })
 // 채널 개별 수정
-  .put([
+  .put(
+  [
     param('chId').notEmpty().withMessage('chId 값이 필요'),
-    body('chName').notEmpty().isString().withMessage('채널명 오류')
+    body('chName').notEmpty().isString().withMessage('채널명 오류'),
+    validate
   ]
   ,(req, res) => {
-    const err = validationResult(req);
-    if(!err.isEmpty()){
-      return res.status(400).json(err.array())
-    }
+
     let {id} = req.params
     id = parseInt(id);
     let chName = req.body;
@@ -116,11 +109,11 @@ router.route('/:id')
 
   })
 // 채널 개별 삭제
-  .delete(param('chId').notEmpty().withMessage('chId 값이 필요'),(req, res) => {
-    const err = validationResult(req);
-    if(!err.isEmpty()){
-      return res.status(400).json(err.array())
-    }
+  .delete(
+    [
+      param('chId').notEmpty().withMessage('chId 값이 필요')
+    ]
+    ,(req, res) => {
     let {chId} = req.params
     chId = parseInt(chId);
 
