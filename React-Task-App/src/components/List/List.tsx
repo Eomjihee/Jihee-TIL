@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { IList, ITask } from "../../types";
 import { GrSubtract } from "react-icons/gr";
 import Task from "../Task/Task";
@@ -9,6 +9,27 @@ import { addLog } from "../../store/slices/loggerSlice";
 import { v4 as uuidv4 } from "uuid";
 import { setModalData } from "../../store/slices/modalSlice";
 import { deleteButton, header, listWrapper, name } from "./List.css";
+import { Droppable, DroppableProps } from "react-beautiful-dnd";
+
+const StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
+  // 현재 DnD가 Strict Mode에서 정상작동하지 않는 오류가 있어 사용
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const animation = requestAnimationFrame(() => setEnabled(true));
+
+    return () => {
+      cancelAnimationFrame(animation);
+      setEnabled(false);
+    };
+  }, []);
+
+  if (!enabled) {
+    return null;
+  }
+
+  return <Droppable {...props}>{children}</Droppable>;
+};
 
 type TListProps = {
   list: IList;
@@ -42,39 +63,47 @@ const List: FC<TListProps> = ({ list, boardId }) => {
   }
 
   return (
-    <div
-      className={listWrapper}
-    >
-      <div className={header}>
-        <div className={name}>{list.listName}</div>
-        {/* icon: - */}
-        <GrSubtract 
-          className={deleteButton}
-          onClick={()=> handleListDelete(list.listId)}
-        />
-      </div>
-      {
-        list.tasks.map((task, idx) => (
-          <div
-            key={task.taskId}
-            onClick={()=> handleTaskChange(boardId, list.listId, task.taskId, task)}
-          >
-            <Task 
-              taskName={task.taskName}
-              taskDescription={task.taskDescription}
-              boardId={boardId}
-              id={task.taskId}
-              // dnd를 위해 필요
-              idx={idx}
+    // droppableId 필수
+    <StrictModeDroppable droppableId={list.listId}>
+      {provided => (
+        <div
+          className={listWrapper}
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+        >
+          <div className={header}>
+            <div className={name}>{list.listName}</div>
+            {/* icon: - */}
+            <GrSubtract 
+              className={deleteButton}
+              onClick={()=> handleListDelete(list.listId)}
             />
           </div>
-        ))
-      }
-      <ActionButton 
-        boardId={boardId}
-        listId={list.listId}
-      />
-    </div>
+          {
+            list.tasks.map((task, idx) => (
+              <div
+                key={task.taskId}
+                onClick={()=> handleTaskChange(boardId, list.listId, task.taskId, task)}
+              >
+                <Task 
+                  taskName={task.taskName}
+                  taskDescription={task.taskDescription}
+                  boardId={boardId}
+                  id={task.taskId}
+                  // dnd를 위해 필요
+                  idx={idx}
+                />
+              </div>
+            ))
+          }
+          {provided.placeholder} {/* DnD 기능을 자연스럽게 해주기 위해 공간 마련용 */}
+          <ActionButton 
+            boardId={boardId}
+            listId={list.listId}
+          />
+        </div>
+      )}
+    </StrictModeDroppable>
   );
 };
 

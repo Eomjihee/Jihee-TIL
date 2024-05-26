@@ -108,6 +108,14 @@ type TDeleteTaskAction = {
   listId: string;
   taskId: string;
 };
+type TSortAction = {
+  boardIndex: number;
+  droppableIdStart: string;
+  droppableIdEnd: string;
+  droppableIndexStart: number;
+  droppableIndexEnd: number;
+  draggableId: string;
+};
 
 const boardSlice = createSlice({
   name: "boards",
@@ -184,9 +192,25 @@ const boardSlice = createSlice({
         )}
         : board
       )
+    },
+    sortTask: (state,{payload}: PayloadAction<TSortAction>) => {
+      
+      // same list
+      if(payload.droppableIdStart === payload.droppableIdEnd) {
+        const list = state.boardArray[payload.boardIndex].lists.find(list=> list.listId === payload.droppableIdStart)
+        const card = list?.tasks.splice(payload.droppableIndexStart, 1);
+        list?.tasks.splice(payload.droppableIndexEnd, 0, ...card!);
+      }
+      // other list
+      if(payload.droppableIdStart !== payload.droppableIdEnd) {
+        const listStart = state.boardArray[payload.boardIndex].lists.find(list=> list.listId === payload.droppableIdStart)
+        const card = listStart?.tasks.splice(payload.droppableIndexStart, 1);
+        const listEnd = state.boardArray[payload.boardIndex].lists.find(list=> list.listId === payload.droppableIdEnd)
+        listEnd?.tasks.splice(payload.droppableIndexEnd, 0, ...card!);
+      }
     }
   },
 });
 
-export const { addBoard, deleteBoard, setModalActive, deleteList, addList, addTask, updateTask, deleteTask } = boardSlice.actions;
+export const { addBoard, deleteBoard, setModalActive, deleteList, addList, addTask, updateTask, deleteTask, sortTask } = boardSlice.actions;
 export const boardsReducer = boardSlice.reducer;
