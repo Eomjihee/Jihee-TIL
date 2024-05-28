@@ -9,27 +9,8 @@ import { addLog } from "../../store/slices/loggerSlice";
 import { v4 as uuidv4 } from "uuid";
 import { setModalData } from "../../store/slices/modalSlice";
 import { deleteButton, header, listWrapper, name } from "./List.css";
-import { Droppable, DroppableProps } from "react-beautiful-dnd";
-
-const StrictModeDroppable = ({ children, ...props }: DroppableProps) => {
-  // 현재 DnD가 Strict Mode에서 정상작동하지 않는 오류가 있어 사용
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    const animation = requestAnimationFrame(() => setEnabled(true));
-
-    return () => {
-      cancelAnimationFrame(animation);
-      setEnabled(false);
-    };
-  }, []);
-
-  if (!enabled) {
-    return null;
-  }
-
-  return <Droppable {...props}>{children}</Droppable>;
-};
+// import { Droppable, DroppableProps } from "react-beautiful-dnd";
+import { Droppable } from "@hello-pangea/dnd";
 
 type TListProps = {
   list: IList;
@@ -64,7 +45,7 @@ const List: FC<TListProps> = ({ list, boardId }) => {
 
   return (
     // droppableId 필수
-    <StrictModeDroppable droppableId={list.listId}>
+    <Droppable droppableId={list.listId}>
       {provided => (
         <div
           className={listWrapper}
@@ -103,7 +84,7 @@ const List: FC<TListProps> = ({ list, boardId }) => {
           />
         </div>
       )}
-    </StrictModeDroppable>
+    </Droppable>
   );
 };
 

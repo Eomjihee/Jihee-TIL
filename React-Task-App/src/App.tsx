@@ -1,6 +1,4 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import {
   appContainer,
   board,
@@ -16,7 +14,8 @@ import LoggerModal from "./components/LoggerModal/LoggerModal";
 import { deleteBoard, sortTask } from "./store/slices/boardSlice";
 import { addLog } from "./store/slices/loggerSlice";
 import { v4 as uuidv4 } from "uuid";
-import { DragDropContext} from 'react-beautiful-dnd';
+// import { DragDropContext} from 'react-beautiful-dnd';
+import { DragDropContext} from '@hello-pangea/dnd';
 
 function App() {
   const dispatch = useTypedDispatch();
