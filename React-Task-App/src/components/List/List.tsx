@@ -1,13 +1,13 @@
-import React, { FC, useEffect, useState } from "react";
-import { IList, ITask } from "../../types";
+import { FC } from "react";
 import { GrSubtract } from "react-icons/gr";
-import Task from "../Task/Task";
-import ActionButton from "../ActionButton/DropDownForm/ActionButton";
+import { v4 as uuidv4 } from "uuid";
 import { useTypedDispatch } from "../../hooks/redux";
 import { deleteList, setModalActive } from "../../store/slices/boardSlice";
 import { addLog } from "../../store/slices/loggerSlice";
-import { v4 as uuidv4 } from "uuid";
 import { setModalData } from "../../store/slices/modalSlice";
+import { IList, ITask } from "../../types";
+import ActionButton from "../ActionButton/DropDownForm/ActionButton";
+import Task from "../Task/Task";
 import { deleteButton, header, listWrapper, name } from "./List.css";
 // import { Droppable, DroppableProps } from "react-beautiful-dnd";
 import { Droppable } from "@hello-pangea/dnd";
@@ -32,7 +32,6 @@ const List: FC<TListProps> = ({ list, boardId }) => {
   const handleTaskChange = (
     boardId: string, 
     listId: string, 
-    taskId: string,
     task: ITask
   ) => {
     dispatch(setModalData({
@@ -64,7 +63,7 @@ const List: FC<TListProps> = ({ list, boardId }) => {
             list.tasks.map((task, idx) => (
               <div
                 key={task.taskId}
-                onClick={()=> handleTaskChange(boardId, list.listId, task.taskId, task)}
+                onClick={()=> handleTaskChange(boardId, list.listId, task)}
               >
                 <Task 
                   taskName={task.taskName}

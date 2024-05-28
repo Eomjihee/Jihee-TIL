@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import { ILogItem } from '../../../types';
+import { FC } from 'react';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { ILogItem } from '../../../types';
 import { logItemAuthor, logItemDate, logItemMsg, logItemWrapper } from './LogItem.css';
 
 type TLogItemProps = {
@@ -13,7 +13,6 @@ const LogItem: FC<TLogItemProps> = ({logItem}) => {
     ${timeOffset.getMinutes() > 0 ? `${timeOffset.getMinutes()}m` : ''} 
     ${timeOffset.getSeconds() > 0 ? `${timeOffset.getSeconds()}s ago` : ''}
     ${timeOffset.getSeconds() === 0 ? `just now` : ''}
-
   `
   
   return (

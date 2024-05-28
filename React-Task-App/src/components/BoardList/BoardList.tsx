@@ -1,7 +1,14 @@
+import clsx from "clsx";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
 import React, { FC, useRef, useState } from "react";
-import { useTypedDispatch, useTypedSelector } from "../../hooks/redux";
-import SideForm from "./SideForm/SideForm";
 import { FiLogIn, FiPlusCircle } from "react-icons/fi";
+import { GoSignOut } from "react-icons/go";
+import { v4 as uuidv4 } from "uuid";
+import { app } from "../../firebase";
+import { useTypedDispatch, useTypedSelector } from "../../hooks/redux";
+import { useAuth } from "../../hooks/useAuth";
+import { addLog } from "../../store/slices/loggerSlice";
+import { removeUser, setUser } from "../../store/slices/userSlice";
 import {
   addButton,
   addSection,
@@ -10,15 +17,7 @@ import {
   container,
   title,
 } from "./BoardList.css";
-import clsx from "clsx";
-import { GoSignOut } from "react-icons/go";
-import { getAuth, signInWithPopup, signOut } from "firebase/auth";
-import { app } from "../../firebase";
-import { GoogleAuthProvider } from "firebase/auth"; // 패키지가 "firebase/auth/cordova" 일 경우 오류 발생
-import { addLog } from "../../store/slices/loggerSlice";
-import { v4 as uuidv4 } from "uuid";
-import { removeUser, setUser } from "../../store/slices/userSlice";
-import { useAuth } from "../../hooks/useAuth";
+import SideForm from "./SideForm/SideForm";
 
 type TBoardListProps = {
   activeBoardId: string;
@@ -41,7 +40,7 @@ const BoardList: FC<TBoardListProps> = ({
   const provider = new GoogleAuthProvider();
 
   // custom hooks
-  const { isAuth, email, id } = useAuth();
+  const { isAuth } = useAuth();
 
   // handler
   const handleClick = () => {

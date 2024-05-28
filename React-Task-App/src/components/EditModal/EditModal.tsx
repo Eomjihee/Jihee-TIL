@@ -1,9 +1,8 @@
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { FiX } from 'react-icons/fi';
-import { useTypedDispatch, useTypedSelector } from '../../hooks/redux';
-import { description } from './../Task/Task.css';
-import { deleteTask, setModalActive, updateTask } from '../../store/slices/boardSlice';
 import { v4 as uuidv4 } from 'uuid';
+import { useTypedDispatch, useTypedSelector } from '../../hooks/redux';
+import { deleteTask, setModalActive, updateTask } from '../../store/slices/boardSlice';
 import { addLog } from '../../store/slices/loggerSlice';
 import { modalButtons, modalCloseBtn, modalDeleteBtn, modalHeader, modalHeaderTitle, modalInput, modalTitle, modalUpdateBtn, modalWindow, modalWrapper } from './EditModal.css';
 

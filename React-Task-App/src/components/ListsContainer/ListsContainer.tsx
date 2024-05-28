@@ -1,7 +1,7 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { IList } from "../../types";
-import List from "../List/List";
 import ActionButton from "../ActionButton/DropDownForm/ActionButton";
+import List from "../List/List";
 import { listsContainer } from "./ListsContainer.css";
 
 type TListContainerProps = {
